@@ -4,10 +4,7 @@ import cc.miaooo.application.vo.WordDetailVo
 import cc.miaooo.application.vo.WordSearchVo
 import cc.miaooo.service.WordService
 import jakarta.annotation.security.RolesAllowed
-import jakarta.ws.rs.GET
-import jakarta.ws.rs.Path
-import jakarta.ws.rs.PathParam
-import jakarta.ws.rs.Produces
+import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 
 @Path("/words")
@@ -24,8 +21,8 @@ class WordResource(
 
     @GET
     @RolesAllowed("admin", "user")
-    @Path("/search/{keyword}")
-    fun search(@PathParam("keyword") keyword: String): List<WordSearchVo> {
-        return wordService.search(keyword)
+    @Path("/search")
+    fun search(@QueryParam("keywords") keywords: String): List<WordSearchVo> {
+        return wordService.search(keywords)
     }
 }

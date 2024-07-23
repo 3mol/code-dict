@@ -7,5 +7,5 @@ interface WordService {
 
     fun detail(id: Long): WordDetailVo
 
-    fun search(keyword: String): List<WordSearchVo>
+    fun search(keywords: String): List<WordSearchVo>
 }
