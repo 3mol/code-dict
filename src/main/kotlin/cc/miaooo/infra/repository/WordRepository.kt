@@ -1,8 +1,33 @@
 package cc.miaooo.infra.repository
 
-import cc.miaooo.infra.po.WordPo
 import io.quarkus.hibernate.orm.panache.PanacheRepository
 import jakarta.enterprise.context.ApplicationScoped
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.Id
+import jakarta.persistence.Table
+
+@Entity
+@Table(name = "stardict")
+data class WordPo(
+    @Id
+    @GeneratedValue
+    val id: Long = 0L,
+    val word: String = "",
+    val sw: String = "",
+    val phonetic: String? = null,
+    val definition: String? = null,
+    val translation: String? = null,
+    val pos: String? = null,
+    val collins: Int? = null,
+    val oxford: Int? = null,
+    val tag: String? = null,
+    val bnc: Int? = null,
+    val frq: Int? = null,
+    val exchange: String? = null,
+    val detail: String? = null,
+    val audio: String? = null,
+)
 
 @ApplicationScoped
 class WordRepository : PanacheRepository<WordPo> {
@@ -11,6 +36,9 @@ class WordRepository : PanacheRepository<WordPo> {
     }
 
     fun search(keywords: String): List<WordPo> {
-        return list("word like ?1 or translation like ?1 or sw like ?1 order by frq limit 20", "%$keywords%")
+        return list(
+            "word like ?1 or translation like ?1 or sw like ?1 order by frq limit 20",
+            "%$keywords%"
+        )
     }
 }
