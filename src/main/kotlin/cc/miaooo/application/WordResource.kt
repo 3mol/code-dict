@@ -3,7 +3,6 @@ package cc.miaooo.application
 import cc.miaooo.application.vo.WordDetailVo
 import cc.miaooo.application.vo.WordSearchVo
 import cc.miaooo.service.WordService
-import jakarta.annotation.security.RolesAllowed
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 
@@ -13,14 +12,27 @@ class WordResource(
     val wordService: WordService
 ) {
     @GET
-    @RolesAllowed("admin", "user")
     @Path("/{id}")
     fun detail(@PathParam("id") id: Long): WordDetailVo {
         return wordService.detail(id)
     }
 
     @GET
-    @RolesAllowed("admin", "user")
+    @Path("/detail")
+    fun detail(@QueryParam("id") id: Long?, @QueryParam("word") word: String?): WordDetailVo {
+        if (id == null && word == null) {
+            return WordDetailVo()
+        }
+        if (id != null) {
+            return wordService.detail(id)
+        }
+        if (word != null) {
+            return wordService.detail(word)
+        }
+        return WordDetailVo()
+    }
+
+    @GET
     @Path("/search")
     fun search(@QueryParam("keywords") keywords: String): List<WordSearchVo> {
         return wordService.search(keywords)
