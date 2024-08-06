@@ -2,6 +2,7 @@ package cc.miaooo.application
 
 import cc.miaooo.application.vo.WordDetailVo
 import cc.miaooo.application.vo.WordSearchVo
+import cc.miaooo.service.WordAiService
 import cc.miaooo.service.WordService
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
@@ -9,7 +10,8 @@ import jakarta.ws.rs.core.MediaType
 @Path("/words")
 @Produces(MediaType.APPLICATION_JSON)
 class WordResource(
-    val wordService: WordService
+    val wordService: WordService,
+    val wordAiService: WordAiService
 ) {
     @GET
     @Path("/{id}")
@@ -36,5 +38,11 @@ class WordResource(
     @Path("/search")
     fun search(@QueryParam("keywords") keywords: String): List<WordSearchVo> {
         return wordService.search(keywords)
+    }
+
+    @GET
+    @Path("/ai/explain")
+    fun explain(@QueryParam("word") word: String): String {
+        return wordAiService.explain(word)
     }
 }
