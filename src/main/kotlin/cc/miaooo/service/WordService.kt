@@ -10,4 +10,6 @@ interface WordService {
     fun detail(word: String): WordDetailVo
 
     fun search(keywords: String): List<WordSearchVo>
+
+    fun random(size: Int, tag: String = "cet4"): List<WordSearchVo>
 }

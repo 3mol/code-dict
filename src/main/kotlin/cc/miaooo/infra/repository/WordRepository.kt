@@ -41,4 +41,11 @@ class WordRepository : PanacheRepository<WordPo> {
             "$keywords%"
         )
     }
+
+    fun random(size: Int, tag: String): List<WordPo> {
+        return list(
+            "collins =?1 order by frq limit ?2",
+            tag, size
+        )
+    }
 }

@@ -53,11 +53,19 @@ class WordResource(
     }
 
     @GET
+    @Path("/random")
+    fun random(
+        @QueryParam("size") size: Int,
+        @QueryParam("tag") tag: String = "cet4"
+    ): List<WordSearchVo> {
+        return wordService.random(size, tag)
+    }
+
+    @GET
     @Path("/ai/explain")
     fun explain(@QueryParam("word") word: String): String {
         return wordAiService.explain(word)
     }
-
 
     @GET
     @Path("/chat/streaming")

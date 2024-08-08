@@ -32,7 +32,11 @@ class WordServiceImpl(val wordRepository: WordRepository) : WordService {
 
     override fun search(keywords: String): List<WordSearchVo> {
         val words = wordRepository.search(keywords);
-        return words.map {
+        return words.map(poToSearchVo()).sortedBy { it.word.length }
+    }
+
+    private fun poToSearchVo(): (WordPo) -> WordSearchVo =
+        {
             WordSearchVo(
                 it.id,
                 it.word,
@@ -50,12 +54,15 @@ class WordServiceImpl(val wordRepository: WordRepository) : WordService {
                 it.detail,
                 it.audio
             )
-        }.sortedBy { it.word.length }
-    }
+        }
 
     override fun detail(word: String): WordDetailVo {
         val wordPo = wordRepository.find("word", word).singleResultOptional<WordPo>()
-        return wordPo.map {
+        return wordPo.map(poToDetailVo()).orElse(WordDetailVo());
+    }
+
+    private fun poToDetailVo(): (t: WordPo) -> WordDetailVo =
+        {
             WordDetailVo(
                 it.id,
                 it.word,
@@ -73,6 +80,11 @@ class WordServiceImpl(val wordRepository: WordRepository) : WordService {
                 it.detail,
                 it.audio
             )
-        }.orElse(WordDetailVo());
+        }
+
+    override fun random(size: Int, tag: String): List<WordSearchVo> {
+        val random = wordRepository.random(size, "1")
+        return random.map(poToSearchVo())
     }
+
 }
