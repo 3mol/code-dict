@@ -1,6 +1,6 @@
 package cc.miaooo.service
 
-import cc.miaooo.application.WordBook2Resource
+import cc.miaooo.application.WordBookResource
 import cc.miaooo.domain.WordBook
 import cc.miaooo.domain.WordBookItem
 import cc.miaooo.infra.repository.WordBookItemRepository
@@ -15,7 +15,7 @@ class WordBookServiceImpl(
     val wordBookItemRepository: WordBookItemRepository
 ) : WordBookService {
     @Transactional
-    override fun newWordBook(wordBook: WordBook2Resource.NewWordBookReq): WordBook {
+    override fun newWordBook(wordBook: WordBookResource.NewWordBookReq): WordBook {
         val newWordBook = WordBook(
             name = wordBook.name,
             createdAt = LocalDateTime.now(),
@@ -38,7 +38,9 @@ class WordBookServiceImpl(
     }
 
     override fun detail(id: Long): WordBook {
-        return wordBookRepository.findById(id)
+        val wordBook = wordBookRepository.findById(id)
+        val wordBookItems = wordBookItemRepository.list("wordBookId = ?1", id)
+        return wordBook.copy(items = wordBookItems.map { it.wordId })
     }
 
     @Transactional

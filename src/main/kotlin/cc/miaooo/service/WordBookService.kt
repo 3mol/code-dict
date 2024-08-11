@@ -1,11 +1,11 @@
 package cc.miaooo.service
 
-import cc.miaooo.application.WordBook2Resource
+import cc.miaooo.application.WordBookResource
 import cc.miaooo.domain.WordBook
 import cc.miaooo.domain.WordBookItem
 
 interface WordBookService {
-    fun newWordBook(wordBook: WordBook2Resource.NewWordBookReq): WordBook
+    fun newWordBook(wordBook: WordBookResource.NewWordBookReq): WordBook
     fun appendToWordBook(wordBookId: Long, wordId: Long): WordBookItem
     fun removeWordBook(itemId: Long)
     fun deleteWordBook(wordBookId: Long)

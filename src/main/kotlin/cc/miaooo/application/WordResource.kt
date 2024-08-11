@@ -12,6 +12,8 @@ import io.quarkus.rest.client.reactive.QuarkusRestClientBuilder
 import io.smallrye.mutiny.Multi
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
+import org.eclipse.microprofile.openapi.annotations.Operation
+import org.eclipse.microprofile.openapi.annotations.media.Schema
 import org.jboss.resteasy.reactive.RestStreamElementType
 import java.net.URI
 import java.net.URISyntaxException
@@ -27,6 +29,7 @@ class WordResource(
 ) {
     @GET
     @Path("/{id}")
+    @Operation(description = "Get word detail", operationId = "WordResource_detailById")
     fun detail(@PathParam("id") id: Long): WordDetailVo {
         return wordService.detail(id)
     }

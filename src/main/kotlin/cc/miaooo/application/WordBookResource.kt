@@ -5,11 +5,14 @@ import cc.miaooo.domain.WordBookItem
 import cc.miaooo.service.WordBookService
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
+import org.eclipse.microprofile.openapi.annotations.tags.Tag
+import org.eclipse.microprofile.openapi.annotations.tags.Tags
 
 
 @Path("/word-books")
 @Produces(MediaType.APPLICATION_JSON)
-class WordBook2Resource(
+@Tags(Tag(name = "word book"))
+class WordBookResource(
     private val wordBookService: WordBookService
 ) {
     // select all word books
@@ -53,6 +56,7 @@ class WordBook2Resource(
 
 @Path("/word-book-items")
 @Produces(MediaType.APPLICATION_JSON)
+@Tag(name = "word-book-item")
 class WordBookItemResource(
     private val wordBookService: WordBookService
 ) {

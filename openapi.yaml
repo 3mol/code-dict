@@ -1,0 +1,645 @@
+---
+openapi: 3.0.3
+info:
+  title: code-dict API
+  version: 1.0-SNAPSHOT
+tags:
+- name: word book
+- name: word-book-item
+paths:
+  /accounts:
+    post:
+      tags:
+      - Account Resource
+      operationId: AccountResource_register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Account"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+  /accounts/login:
+    post:
+      tags:
+      - Account Resource
+      operationId: AccountResource_login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountLoginReq"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+  /accounts/{id}:
+    get:
+      tags:
+      - Account Resource
+      operationId: AccountResource_detail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+  /api/admin:
+    get:
+      tags:
+      - Admin Resource
+      operationId: AdminResource_adminResource
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+  /api/public:
+    get:
+      tags:
+      - Public Resource
+      operationId: PublicResource_publicResource
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/users/me:
+    get:
+      tags:
+      - User Resource
+      operationId: UserResource_me
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+  /comments:
+    post:
+      tags:
+      - Word Comment Resource
+      operationId: WordCommentResource_append
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WordComment"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordComment"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+  /comments/{id}:
+    get:
+      tags:
+      - Word Comment Resource
+      operationId: WordCommentResource_detail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordComment"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+    delete:
+      tags:
+      - Word Comment Resource
+      operationId: WordCommentResource_delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+  /word-book-items/append/{wordBookId}/{wordId}:
+    post:
+      tags:
+      - word-book-item
+      operationId: WordBookItemResource_appendToWordBook
+      parameters:
+      - name: wordBookId
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      - name: wordId
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordBookItem"
+  /word-book-items/{id}:
+    delete:
+      tags:
+      - word-book-item
+      operationId: WordBookItemResource_removeFromWordBook
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "204":
+          description: No Content
+  /word-books:
+    post:
+      tags:
+      - word book
+      operationId: WordBookResource_newWordBook
+      parameters:
+      - name: name
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordBook"
+  /word-books/all:
+    get:
+      tags:
+      - word book
+      operationId: WordBookResource_getAllWordBooks
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WordBook"
+  /word-books/delete/{wordBookId}:
+    delete:
+      tags:
+      - word book
+      operationId: WordBookResource_deleteWordBook
+      parameters:
+      - name: wordBookId
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "204":
+          description: No Content
+  /word-books/{id}:
+    get:
+      tags:
+      - word book
+      operationId: WordBookResource_detail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordBook"
+  /word-books/{wordBookId}/name/{name}:
+    put:
+      tags:
+      - word book
+      operationId: WordBookResource_renameWordBook
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: wordBookId
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordBook"
+  /words/ai/explain:
+    get:
+      tags:
+      - Word Resource
+      operationId: WordResource_explain
+      parameters:
+      - name: word
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /words/chat/streaming:
+    get:
+      tags:
+      - Word Resource
+      operationId: WordResource_chatStreaming
+      parameters:
+      - name: word
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /words/detail:
+    get:
+      tags:
+      - Word Resource
+      operationId: WordResource_detail
+      parameters:
+      - name: id
+        in: query
+        schema:
+          format: int64
+          type: integer
+          nullable: true
+      - name: word
+        in: query
+        schema:
+          type: string
+          nullable: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordDetailVo"
+  /words/random:
+    get:
+      tags:
+      - Word Resource
+      operationId: WordResource_random
+      parameters:
+      - name: size
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: tag
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WordSearchVo"
+  /words/search:
+    get:
+      tags:
+      - Word Resource
+      operationId: WordResource_search
+      parameters:
+      - name: keywords
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WordSearchVo"
+  /words/{id}:
+    get:
+      tags:
+      - Word Resource
+      description: Get word detail
+      operationId: WordResource_detailById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordDetailVo"
+components:
+  schemas:
+    Account:
+      required:
+      - name
+      - pwd
+      - phone
+      - email
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+          nullable: true
+        name:
+          type: string
+        pwd:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+    AccountLoginReq:
+      required:
+      - name
+      - pwd
+      type: object
+      properties:
+        name:
+          type: string
+        pwd:
+          type: string
+    LocalDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50
+    WordBook:
+      required:
+      - name
+      - createdAt
+      - updatedAt
+      - items
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/LocalDateTime"
+        updatedAt:
+          $ref: "#/components/schemas/LocalDateTime"
+        items:
+          type: array
+          items:
+            format: int64
+            type: integer
+    WordBookItem:
+      required:
+      - createdAt
+      - updatedAt
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+        wordBookId:
+          format: int64
+          type: integer
+        wordId:
+          format: int64
+          type: integer
+        createdAt:
+          $ref: "#/components/schemas/LocalDateTime"
+        updatedAt:
+          $ref: "#/components/schemas/LocalDateTime"
+    WordComment:
+      required:
+      - content
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+        content:
+          type: string
+        userId:
+          format: int64
+          type: integer
+        wordId:
+          format: int64
+          type: integer
+    WordDetailVo:
+      required:
+      - word
+      - sw
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+        word:
+          type: string
+        sw:
+          type: string
+        phonetic:
+          type: string
+          nullable: true
+        definition:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        pos:
+          type: string
+          nullable: true
+        collins:
+          format: int32
+          type: integer
+          nullable: true
+        oxford:
+          format: int32
+          type: integer
+          nullable: true
+        tag:
+          type: string
+          nullable: true
+        bnc:
+          format: int32
+          type: integer
+          nullable: true
+        frq:
+          format: int32
+          type: integer
+          nullable: true
+        exchange:
+          type: string
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        audio:
+          type: string
+          nullable: true
+    WordSearchVo:
+      required:
+      - word
+      - sw
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+        word:
+          type: string
+        sw:
+          type: string
+        phonetic:
+          type: string
+          nullable: true
+        definition:
+          type: string
+          nullable: true
+        translation:
+          type: string
+          nullable: true
+        pos:
+          type: string
+          nullable: true
+        collins:
+          format: int32
+          type: integer
+          nullable: true
+        oxford:
+          format: int32
+          type: integer
+          nullable: true
+        tag:
+          type: string
+          nullable: true
+        bnc:
+          format: int32
+          type: integer
+          nullable: true
+        frq:
+          format: int32
+          type: integer
+          nullable: true
+        exchange:
+          type: string
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        audio:
+          type: string
+          nullable: true
+  securitySchemes:
+    SecurityScheme:
+      type: http
+      description: Authentication
+      scheme: basic

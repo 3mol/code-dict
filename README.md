@@ -1,78 +1,81 @@
-# code-dict
+# org.openapitools.client - Kotlin client library for code-dict API
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+## Requires
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+* Kotlin 1.4.30
+* Gradle 6.8.3
 
-## Running the application in dev mode
+## Build
 
-You can run your application in dev mode that enables live coding using:
+First, create the gradle wrapper script:
 
-```shell script
-./mvnw compile quarkus:dev
+```
+gradle wrapper
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only
-> at <http://localhost:8080/q/dev/>.
+Then, run:
 
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
+```
+./gradlew check assemble
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into
-the `target/quarkus-app/lib/` directory.
+This runs all tests and packages the library.
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+## Features/Implementation Notes
 
-If you want to build an _über-jar_, execute the following command:
+* Supports JSON inputs/outputs, File inputs, and Form inputs.
+* Supports collection formats for query parameters: csv, tsv, ssv, pipes.
+* Some Kotlin and Java types are fully qualified to avoid conflicts with types defined in OpenAPI definitions.
+* Implementation of ApiClient is intended to reduce method counts, specifically to benefit Android targets.
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+<a name="documentation-for-api-endpoints"></a>
+## Documentation for API Endpoints
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+All URIs are relative to *http://localhost*
 
-## Creating a native executable
+Class | Method | HTTP request | Description
+------------ | ------------- | ------------- | -------------
+*AccountResourceApi* | [**accountResourceDetail**](docs/AccountResourceApi.md#accountresourcedetail) | **GET** /accounts/{id} | 
+*AccountResourceApi* | [**accountResourceLogin**](docs/AccountResourceApi.md#accountresourcelogin) | **POST** /accounts/login | 
+*AccountResourceApi* | [**accountResourceRegister**](docs/AccountResourceApi.md#accountresourceregister) | **POST** /accounts | 
+*AdminResourceApi* | [**adminResourceAdminResource**](docs/AdminResourceApi.md#adminresourceadminresource) | **GET** /api/admin | 
+*PublicResourceApi* | [**publicResourcePublicResource**](docs/PublicResourceApi.md#publicresourcepublicresource) | **GET** /api/public | 
+*UserResourceApi* | [**userResourceMe**](docs/UserResourceApi.md#userresourceme) | **GET** /api/users/me | 
+*WordBookApi* | [**wordBookResourceDeleteWordBook**](docs/WordBookApi.md#wordbookresourcedeletewordbook) | **DELETE** /word-books/delete/{wordBookId} | 
+*WordBookApi* | [**wordBookResourceDetail**](docs/WordBookApi.md#wordbookresourcedetail) | **GET** /word-books/{id} | 
+*WordBookApi* | [**wordBookResourceGetAllWordBooks**](docs/WordBookApi.md#wordbookresourcegetallwordbooks) | **GET** /word-books/all | 
+*WordBookApi* | [**wordBookResourceNewWordBook**](docs/WordBookApi.md#wordbookresourcenewwordbook) | **POST** /word-books | 
+*WordBookApi* | [**wordBookResourceRenameWordBook**](docs/WordBookApi.md#wordbookresourcerenamewordbook) | **PUT** /word-books/{wordBookId}/name/{name} | 
+*WordBookItemApi* | [**wordBookItemResourceAppendToWordBook**](docs/WordBookItemApi.md#wordbookitemresourceappendtowordbook) | **POST** /word-book-items/append/{wordBookId}/{wordId} | 
+*WordBookItemApi* | [**wordBookItemResourceRemoveFromWordBook**](docs/WordBookItemApi.md#wordbookitemresourceremovefromwordbook) | **DELETE** /word-book-items/{id} | 
+*WordCommentResourceApi* | [**wordCommentResourceAppend**](docs/WordCommentResourceApi.md#wordcommentresourceappend) | **POST** /comments | 
+*WordCommentResourceApi* | [**wordCommentResourceDelete**](docs/WordCommentResourceApi.md#wordcommentresourcedelete) | **DELETE** /comments/{id} | 
+*WordCommentResourceApi* | [**wordCommentResourceDetail**](docs/WordCommentResourceApi.md#wordcommentresourcedetail) | **GET** /comments/{id} | 
+*WordResourceApi* | [**wordResourceChatStreaming**](docs/WordResourceApi.md#wordresourcechatstreaming) | **GET** /words/chat/streaming | 
+*WordResourceApi* | [**wordResourceDetail**](docs/WordResourceApi.md#wordresourcedetail) | **GET** /words/detail | 
+*WordResourceApi* | [**wordResourceDetailById**](docs/WordResourceApi.md#wordresourcedetailbyid) | **GET** /words/{id} | 
+*WordResourceApi* | [**wordResourceExplain**](docs/WordResourceApi.md#wordresourceexplain) | **GET** /words/ai/explain | 
+*WordResourceApi* | [**wordResourceRandom**](docs/WordResourceApi.md#wordresourcerandom) | **GET** /words/random | 
+*WordResourceApi* | [**wordResourceSearch**](docs/WordResourceApi.md#wordresourcesearch) | **GET** /words/search | 
 
-You can create a native executable using:
 
-```shell script
-./mvnw package -Dnative
-```
+<a name="documentation-for-models"></a>
+## Documentation for Models
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container
-using:
+ - [org.openapitools.client.models.Account](docs/Account.md)
+ - [org.openapitools.client.models.AccountLoginReq](docs/AccountLoginReq.md)
+ - [org.openapitools.client.models.WordBook](docs/WordBook.md)
+ - [org.openapitools.client.models.WordBookItem](docs/WordBookItem.md)
+ - [org.openapitools.client.models.WordComment](docs/WordComment.md)
+ - [org.openapitools.client.models.WordDetailVo](docs/WordDetailVo.md)
+ - [org.openapitools.client.models.WordSearchVo](docs/WordSearchVo.md)
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
 
-You can then execute your native executable with: `./target/code-dict-1.0-SNAPSHOT-runner`
+<a name="documentation-for-authorization"></a>
+## Documentation for Authorization
 
-If you want to learn more about building native executables, please
-consult <https://quarkus.io/guides/maven-tooling>.
+<a name="SecurityScheme"></a>
+### SecurityScheme
 
-## Related Guides
+- **Type**: HTTP basic authentication
 
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time
-  processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or
-  any of the extensions that depend on it.
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs
-  with OpenAPI - comes with Swagger UI
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization
-  support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or
-  any of the extensions that depend on it
-- Kotlin ([guide](https://quarkus.io/guides/kotlin)): Write your services in Kotlin
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)

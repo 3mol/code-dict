@@ -1,5 +1,6 @@
 package cc.miaooo.domain
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -10,9 +11,11 @@ data class WordBook(
     @GeneratedValue
     val id: Long = 0,
     val name: String = "",
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     @Column(name = "created_at")
     val createdAt: LocalDateTime = LocalDateTime.MIN,
     @Column(name = "updated_at")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     val updatedAt: LocalDateTime = LocalDateTime.MIN,
     // exclude field
     @Transient
