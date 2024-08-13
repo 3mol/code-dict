@@ -12,4 +12,6 @@ interface WordBookService {
     fun renameWordBook(wordBookId: Long, name: String): WordBook
     fun getAllWordBooks(): List<WordBook>
     fun detail(id: Long): WordBook
+    fun removeWordBook(wordBookId: Long, wordId: Long)
+    fun detailItem(wordBookId: Long, wordId: Long): WordBookItem?
 }

@@ -8,6 +8,7 @@ import cc.miaooo.infra.repository.WordBookRepository
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
 import java.time.LocalDateTime
+import kotlin.jvm.optionals.getOrNull
 
 @ApplicationScoped
 class WordBookServiceImpl(
@@ -41,6 +42,20 @@ class WordBookServiceImpl(
         val wordBook = wordBookRepository.findById(id)
         val wordBookItems = wordBookItemRepository.list("wordBookId = ?1", id)
         return wordBook.copy(items = wordBookItems.map { it.wordId })
+    }
+
+    override fun detailItem(wordBookId: Long, wordId: Long): WordBookItem? {
+        val singleResultOptional =
+            wordBookItemRepository.find("wordBookId = ?1 and wordId = ?2", wordBookId, wordId)
+                .singleResultOptional<WordBookItem>()
+        return singleResultOptional.getOrNull()
+    }
+
+    @Transactional
+    override fun removeWordBook(wordBookId: Long, wordId: Long) {
+        wordBookItemRepository.find("wordBookId = ?1 and wordId = ?2", wordBookId, wordId).singleResultOptional<WordBookItem>().ifPresent {
+            wordBookItemRepository.deleteById(it.id)
+        }
     }
 
     @Transactional

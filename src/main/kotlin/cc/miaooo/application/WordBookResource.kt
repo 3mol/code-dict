@@ -76,4 +76,18 @@ class WordBookItemResource(
     fun removeFromWordBook(@PathParam("id") id: Long) {
         wordBookService.removeWordBook(id)
     }
+
+    @DELETE
+    @Path("/remove/{wordBookId}/{wordId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    fun removeFromWordBook(@PathParam("wordBookId") wordBookId: Long, @PathParam("wordId") wordId: Long) {
+        wordBookService.removeWordBook(wordBookId, wordId)
+    }
+
+    @GET
+    @Path("/{wordBookId}/{wordId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    fun detail(@PathParam("wordBookId") wordBookId: Long, @PathParam("wordId") wordId: Long): WordBookItem? {
+        return wordBookService.detailItem(wordBookId, wordId)
+    }
 }
