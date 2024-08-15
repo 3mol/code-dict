@@ -34,6 +34,13 @@ class WordResource(
         return wordService.detail(id)
     }
 
+    // get batch by ids
+    @GET
+    @Path("/detail/batch")
+    fun batch(@QueryParam("ids") ids: List<Long>): List<WordDetailVo> {
+        return wordService.batch(ids)
+    }
+
     @GET
     @Path("/detail")
     fun detail(@QueryParam("id") id: Long?, @QueryParam("word") word: String?): WordDetailVo {

@@ -12,4 +12,5 @@ interface WordService {
     fun search(keywords: String): List<WordSearchVo>
 
     fun random(size: Int, tag: String = "cet4"): List<WordSearchVo>
+    fun batch(ids: List<Long>): List<WordDetailVo>
 }

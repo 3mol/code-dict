@@ -87,4 +87,9 @@ class WordServiceImpl(val wordRepository: WordRepository) : WordService {
         return random.map(poToSearchVo())
     }
 
+    override fun batch(ids: List<Long>): List<WordDetailVo> {
+        val words = wordRepository.list("id in ?1", ids)
+        return words.map(poToDetailVo())
+    }
+
 }
