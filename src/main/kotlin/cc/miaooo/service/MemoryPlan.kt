@@ -67,23 +67,10 @@ class MemoryPlan<T> {
 
         // 计算出 任务堆叠 的位置
         // [(A)] => [(A,[B]))]
-        val map = dateMemoryPlans.flatMap { t ->
-            // [1,2,4,7,15]
-            val place = intArrayOf(1, 2, 4, 7, 15)
-                .map { t.date.plusDays((it - 1).toLong()) }
-                .toList()
-            return@flatMap place.map { Pair(it, t.studyGroup) }
-        }.groupBy({ it.first }, { it.second })
-        return dateMemoryPlans.map { it ->
-            val flatten =
-                map.getOrElse(it.date) { listOf() }
-                    .flatten()
-                    .filter { it.studySomething.isNotEmpty() }
-                    .toList()
-            return@map it.copy(studyGroup = flatten)
-        }
+        val map = dateMemoryPlans
             .filter { it.studyGroup.isNotEmpty() }
             .toList()
+        return dateMemoryPlans
     }
 
     private fun calcStudyContents(
@@ -104,12 +91,8 @@ class MemoryPlan<T> {
         dateStudyTaskList.addAll(mutableListOf)
     }
 
-    fun initPlanContainer(doPlan: List<T>): PlanContainer<T> {
-        return PlanContainerImpl(doPlan)
-    }
-
     interface PlanContainer<T> {
-        fun remark(date: LocalDate, filter: (a: T) -> Boolean, io: (a: T) -> Unit)
+        fun remark(filter: (a: T) -> Boolean, io: (a: T) -> Unit)
     }
 
     class PlanContainerImpl<T>(doPlan: List<T>) : PlanContainer<T> {
@@ -119,9 +102,8 @@ class MemoryPlan<T> {
             doPlan.forEach(queue1::add)
         }
 
-        override fun remark(date: LocalDate, filter: (a: T) -> Boolean, io: (a: T) -> Unit) {
+        override fun remark(filter: (a: T) -> Boolean, io: (a: T) -> Unit) {
             // 先复习，最后学习新词
-            val set = mutableSetOf<T>()
             for (item in queue1) {
                 if (filter(item)) {
                     io(item)
