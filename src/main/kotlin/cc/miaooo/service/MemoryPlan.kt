@@ -5,6 +5,31 @@ import java.util.stream.IntStream
 import kotlin.math.ceil
 
 class MemoryPlan<T> {
+    private val dateStudyTaskList: MutableList<T> = mutableListOf();
+
+    /**
+     * 获取复习的单词列表
+     */
+    fun reviewWords(historyWords: List<T>): List<T> {
+        return emptyList()
+    }
+
+    fun remarkWord(): (T) -> Unit {
+        val mutableListOf = mutableListOf<T>()
+        return { it: T ->
+            mutableListOf.add(it)
+        }
+    }
+
+    fun dateStudyTask(date: LocalDate, from: List<DateMemoryPlan<T>>): List<T> {
+        val toList =
+            from.filter { it.date == date }
+                .flatMap { it.studyGroup }
+                .flatMap { it.studySomething }
+                .toList()
+        return toList
+    }
+
     fun doPlan(batchSize: Int, studySomething: List<T>): List<DateMemoryPlan<T>> {
         // 新词天数
         val day = ceil(studySomething.size / batchSize.toDouble()).toInt()
@@ -14,7 +39,10 @@ class MemoryPlan<T> {
         val calcStudyContents = calcStudyContents(day, studySomething, batchSize)
         val contentsIndexes = (0..calcStudyContents!!.size).toList()
         val localDateStudyContentMap = (contentsIndexes zip calcStudyContents).map {
-            return@map Pair(LocalDate.now().plusDays(it.first.toLong()), it.second)
+            // index, List<List<T>>
+            val first = it.first
+            val second = it.second
+            return@map Pair(LocalDate.now().plusDays(first.toLong()), second)
         }.toMap()
 
         // contents filling into template
@@ -26,9 +54,13 @@ class MemoryPlan<T> {
         }).toList()
 
         val dateMemoryPlans = template.map({
-            val studyContent = localDateStudyContentMap.getOrElse(it.date) { it.studySomething }
-            val item = Item(it.date.toString(), studyContent)
-            return@map it.copy(studySomething = listOf(item))
+            val studyContent = localDateStudyContentMap.getOrElse(it.date) { null }
+            if (studyContent == null) {
+                return@map it.copy(studyGroup = it.studyGroup)
+            } else {
+                val item = Item(it.date.toString(), studyContent)
+                return@map it.copy(studyGroup = listOf(item))
+            }
         })
 
         println(dateMemoryPlans)
@@ -40,7 +72,7 @@ class MemoryPlan<T> {
             val place = intArrayOf(1, 2, 4, 7, 15)
                 .map { t.date.plusDays((it - 1).toLong()) }
                 .toList()
-            return@flatMap place.map { Pair(it, t.studySomething) }
+            return@flatMap place.map { Pair(it, t.studyGroup) }
         }.groupBy({ it.first }, { it.second })
         return dateMemoryPlans.map { it ->
             val flatten =
@@ -48,9 +80,9 @@ class MemoryPlan<T> {
                     .flatten()
                     .filter { it.studySomething.isNotEmpty() }
                     .toList()
-            return@map it.copy(studySomething = flatten)
+            return@map it.copy(studyGroup = flatten)
         }
-            .filter { it.studySomething.isNotEmpty() }
+            .filter { it.studyGroup.isNotEmpty() }
             .toList()
     }
 
@@ -58,7 +90,7 @@ class MemoryPlan<T> {
         days: Int,
         studySomething: List<T>,
         batchSize: Int
-    ): MutableList<List<T>>? {
+    ): List<List<T>>? {
         return IntStream.range(0, days).mapToObj {
             val end = (it + 1) * batchSize
             val left = it * batchSize
@@ -68,21 +100,39 @@ class MemoryPlan<T> {
         }.toList()
     }
 
-    private fun consumeList(
-        studySomething: List<T>,
-        toHere: MutableList<T>,
-        count: Int
-    ): List<T> {
-        if (count == 0) {
-            return toHere;
+    fun pushDateStudyTask(mutableListOf: MutableList<T>) {
+        dateStudyTaskList.addAll(mutableListOf)
+    }
+
+    fun initPlanContainer(doPlan: List<T>): PlanContainer<T> {
+        return PlanContainerImpl(doPlan)
+    }
+
+    interface PlanContainer<T> {
+        fun remark(date: LocalDate, filter: (a: T) -> Boolean, io: (a: T) -> Unit)
+    }
+
+    class PlanContainerImpl<T>(doPlan: List<T>) : PlanContainer<T> {
+        private val queue1: ArrayDeque<T> = ArrayDeque()
+
+        init {
+            doPlan.forEach(queue1::add)
         }
-        toHere += studySomething[0]
-        return consumeList(studySomething.takeLast(studySomething.size - 1), toHere, count - 1)
+
+        override fun remark(date: LocalDate, filter: (a: T) -> Boolean, io: (a: T) -> Unit) {
+            // 先复习，最后学习新词
+            val set = mutableSetOf<T>()
+            for (item in queue1) {
+                if (filter(item)) {
+                    io(item)
+                }
+            }
+        }
     }
 
     data class Item<T>(val tag: String, val studySomething: List<T>) {}
     data class DateMemoryPlan<T>(
         val date: LocalDate,
-        val studySomething: List<Item<Any?>>
+        val studyGroup: List<Item<T>>
     ) {}
 }
