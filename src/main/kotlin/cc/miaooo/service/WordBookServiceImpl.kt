@@ -13,14 +13,13 @@ import kotlin.jvm.optionals.getOrNull
 @ApplicationScoped
 class WordBookServiceImpl(
     val wordBookRepository: WordBookRepository,
-    val wordBookItemRepository: WordBookItemRepository
+    val wordBookItemRepository: WordBookItemRepository,
+    val wordServiceImpl: WordServiceImpl
 ) : WordBookService {
     @Transactional
     override fun newWordBook(wordBook: WordBookResource.NewWordBookReq): WordBook {
         val newWordBook = WordBook(
-            name = wordBook.name,
-            createdAt = LocalDateTime.now(),
-            updatedAt = LocalDateTime.now()
+            name = wordBook.name, createdAt = LocalDateTime.now(), updatedAt = LocalDateTime.now()
         )
         wordBookRepository.persist(newWordBook)
         return newWordBook
@@ -53,9 +52,10 @@ class WordBookServiceImpl(
 
     @Transactional
     override fun removeWordBook(wordBookId: Long, wordId: Long) {
-        wordBookItemRepository.find("wordBookId = ?1 and wordId = ?2", wordBookId, wordId).singleResultOptional<WordBookItem>().ifPresent {
-            wordBookItemRepository.deleteById(it.id)
-        }
+        wordBookItemRepository.find("wordBookId = ?1 and wordId = ?2", wordBookId, wordId)
+            .singleResultOptional<WordBookItem>().ifPresent {
+                wordBookItemRepository.deleteById(it.id)
+            }
     }
 
     @Transactional
@@ -72,6 +72,28 @@ class WordBookServiceImpl(
     override fun renameWordBook(wordBookId: Long, name: String): WordBook {
         wordBookRepository.update("name = ?1 where id = ?2", name, wordBookId)
         return wordBookRepository.findById(wordBookId)
+    }
+
+    @Transactional
+    override fun newWordBookByWords(
+        wordBook: WordBookResource.NewWordBookReq, words: List<String>
+    ): WordBook {
+        val newWordBook = newWordBook(wordBook)
+        words.map {
+            val word = wordServiceImpl.detail(it)
+            if (word.id == 0L) {
+                println("匹配失败：$it")
+                return@map 0L
+            }else{
+                println("匹配成功：$it")
+            }
+            return@map word.id
+        }
+            .filter { return@filter it != 0L }
+            .forEach {
+                this.appendToWordBook(newWordBook.id, it)
+            }
+        return newWordBook;
     }
 
     override fun getAllWordBooks(): List<WordBook> {

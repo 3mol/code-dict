@@ -5,6 +5,8 @@ import cc.miaooo.domain.WordBook
 import cc.miaooo.domain.WordBookItem
 
 interface WordBookService {
+    fun newWordBookByWords(wordBook: WordBookResource.NewWordBookReq, words: List<String>): WordBook
+
     fun newWordBook(wordBook: WordBookResource.NewWordBookReq): WordBook
     fun appendToWordBook(wordBookId: Long, wordId: Long): WordBookItem
     fun removeWordBook(itemId: Long)

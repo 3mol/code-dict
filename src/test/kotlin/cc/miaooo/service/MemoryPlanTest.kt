@@ -42,7 +42,7 @@ class MemoryPlanTest {
             .stream().forEach { date ->
                 println("日期：$date")
                 container.remark(
-                    { (it.date == date || it.date.isBefore(date)) && it.count <= 4 },
+                    { (it.date == date || it.date.isBefore(date)) && it.status != Word.WordStatus.FINISHED },
                     {
                         if (Math.random() < 0.3) {
                             print("  记住 > ${it.word} |")
@@ -52,6 +52,7 @@ class MemoryPlanTest {
                                 print("  下次复习时间 > ${it.date} |")
                             } else {
                                 print("  #完成单词# > ${it.date} |")
+                                it.status = Word.WordStatus.FINISHED
                             }
                             it.count += 1;
                         } else {
@@ -62,28 +63,15 @@ class MemoryPlanTest {
                 println()
                 println()
             }
-        /* doPlan.map { it.date }.stream().forEach { date ->
-             // 学习的任务由 复习任务 + 新任务 组成
-             // 复习任务 = 历史待复习任务
-             val dateStudyTask = memoryPlan.dateStudyTask(date, doPlan)
-             println("日期：$date, 任务：$dateStudyTask")
-             val mutableListOf = mutableListOf<String>()
-             dateStudyTask.stream().forEach { word ->
-                 if (Math.random() < 0.70) {
-                     print("  记住 > $word |")
-                     mutableListOf.add(word)
-                 } else {
-                     // 模拟记不住
-                     print("  记不住 > $word |")
-                 }
-             }
-             println()
-             println()
-             memoryPlan.pushDateStudyTask(mutableListOf)
-         }*/
 
 
     }
 }
 
-data class Word(var date: LocalDate, val word: String, var count: Int = 0) {}
+data class Word(var date: LocalDate, val word: String, var count: Int = 0) {
+    var status: WordStatus = WordStatus.WAIT_STUDY;
+
+    public enum class WordStatus {
+        WAIT_STUDY, STUDYING, FINISHED
+    }
+}

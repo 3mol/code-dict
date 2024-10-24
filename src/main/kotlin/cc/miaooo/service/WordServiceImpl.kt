@@ -91,5 +91,4 @@ class WordServiceImpl(val wordRepository: WordRepository) : WordService {
         val words = wordRepository.list("id in ?1", ids)
         return words.map(poToDetailVo())
     }
-
 }
