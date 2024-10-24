@@ -5,6 +5,7 @@ import io.quarkus.test.junit.QuarkusTest
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
 import org.junit.jupiter.api.Test
+import java.io.File
 
 @QuarkusTest
 class WordBookServiceImplTest {
@@ -14,41 +15,17 @@ class WordBookServiceImplTest {
 
     @Test
     fun newWordBookByWords() {
+        val fileName = "src/test/resources/words-gaokao.txt" // 文件路径
+
+        val wordList = mutableListOf<String>()
+
+        File(fileName).forEachLine {
+            wordList.add(it)
+        }
+        // 读取test/resource的 words-gaokao.txt 文件，每行作为一个元素 得到一个列表
         service.newWordBookByWords(
             wordBook = WordBookResource.NewWordBookReq("高考单词"),
-            listOf(
-                "a",
-                "abandon",
-                "ability",
-                "able",
-                "abnormal",
-                "aboard",
-                "abolish",
-                "abortion",
-                "about",
-                "above",
-                "abroad",
-                "abrupt",
-                "absence",
-                "absent",
-                "absolute",
-                "absorb",
-                "abstract",
-                "absurd",
-                "abundant",
-                "abuse",
-                "academic",
-                "academy",
-                "accelerate",
-                "accent",
-                "accept",
-                "access",
-                "accessible",
-                "accident",
-                "accommodation",
-                "accompany",
-                "accomplish",
-            )
+            wordList
         )
     }
 }

@@ -80,14 +80,18 @@ class WordBookServiceImpl(
     ): WordBook {
         val newWordBook = newWordBook(wordBook)
         words.map {
-            val word = wordServiceImpl.detail(it)
-            if (word.id == 0L) {
+            try {
+                val word = wordServiceImpl.detail(it)
+                if (word.id == 0L) {
+                    println("匹配失败：$it")
+                    return@map 0L
+                } else {
+                    // println("匹配成功：$it")
+                }
+            } catch (e: Exception) {
                 println("匹配失败：$it")
-                return@map 0L
-            }else{
-                println("匹配成功：$it")
             }
-            return@map word.id
+            return@map 0L;
         }
             .filter { return@filter it != 0L }
             .forEach {

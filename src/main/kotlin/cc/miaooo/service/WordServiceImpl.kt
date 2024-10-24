@@ -57,6 +57,8 @@ class WordServiceImpl(val wordRepository: WordRepository) : WordService {
         }
 
     override fun detail(word: String): WordDetailVo {
+        // todo fix ci
+        // SELECT * FROM stardict WHERE word COLLATE utf8mb4_bin = 'race';
         val wordPo = wordRepository.find("word", word).singleResultOptional<WordPo>()
         return wordPo.map(poToDetailVo()).orElse(WordDetailVo());
     }
